@@ -1,3 +1,5 @@
+package com.projectscout;
+
 // TODO: currently returns boolean, will switch this to a more instructive object like:
 // boolean present | int (1-10) severity
 public record RepoRootRecord(
@@ -6,9 +8,9 @@ public record RepoRootRecord(
         boolean hasRootSrc,
         boolean hasGitIgnore,
         boolean hasNodeModules,
-        boolean hasYarn,
-        boolean hasNpm,
-        boolean hasPNPM,
+        boolean hasYarnLockFile,
+        boolean hasNpmLockFile,
+        boolean hasPNPMLockFile,
         boolean hasMultipleLockFiles,
         boolean hasEsLint,
         boolean hasPrettier,

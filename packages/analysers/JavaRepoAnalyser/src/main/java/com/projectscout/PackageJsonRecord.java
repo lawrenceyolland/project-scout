@@ -1,3 +1,5 @@
+package com.projectscout;
+
 public record PackageJsonRecord(
         boolean hasDependencies,
         boolean hasDevDependencies,

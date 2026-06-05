@@ -1,3 +1,5 @@
+package com.projectscout;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
@@ -29,12 +31,11 @@ public class PackageJsonAnalyser {
 
     public PackageJsonAnalyser(String filePath) {
         File pkgFile = new File(filePath, "package.json");
-        if (!pkgFile.exists() ) {
+        if (!pkgFile.exists() || !pkgFile.isFile()) {
             throw new IllegalArgumentException("package.json file does not exist " + filePath);
         }
 
         try {
-            // simple json structure so readValue is easier to work with
             this.pkg = mapper.readValue(pkgFile, PackageJson.class);
         } catch (IOException e) {
             throw new RuntimeException(e);

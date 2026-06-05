@@ -1,3 +1,5 @@
+package com.projectscout;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,8 +9,8 @@ public class RepoRootAnalyser {
     private final File directory;
     private final List<String> fileNames = new ArrayList<>();
 
-    private boolean hasFile(String fileName) {
-        return fileNames.contains(fileName);
+    private boolean hasFile(String root) {
+        return fileNames.contains(root);
     }
 
     private boolean hasConfig(String prefix) {
@@ -43,8 +45,19 @@ public class RepoRootAnalyser {
                 counter += 1;
             }
         }
-
         return counter > 1;
+    }
+
+    public String primaryLockFile (RepoRootRecord root) {
+        if (root.hasPNPMLockFile()) {
+            return "pnpm-lock.yaml";
+        } else if (root.hasYarnLockFile()) {
+            return "yarn.lock";
+        } else if (root.hasNpmLockFile()) {
+            return "package-lock.json";
+        };
+
+        return null;
     }
 
     public RepoRootRecord analyse() {

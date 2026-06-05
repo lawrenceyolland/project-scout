@@ -1,5 +1,7 @@
-
+package com.projectscout;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
@@ -8,26 +10,26 @@ public class Main {
             System.exit(1);
         }
 
-        String filePath = args[0];
+        String repoPath = args[0];
 
-        RepoRootAnalyser repoRootAnalyser = new RepoRootAnalyser(filePath);
+        RepoRootAnalyser repoRootAnalyser = new RepoRootAnalyser(repoPath);
         RepoRootRecord rootResult = repoRootAnalyser.analyse();
 
-        // PackageJson pkg;
         PackageJsonRecord pkgResult = null;
         if (rootResult.hasPackageJson()) {
-            PackageJsonAnalyser packageJsonAnalyser = new PackageJsonAnalyser(filePath);
+            PackageJsonAnalyser packageJsonAnalyser = new PackageJsonAnalyser(repoPath);
             pkgResult = packageJsonAnalyser.getPkgFields();
-            // pkg = packageJsonAnalyser.getPkg();
         }
         // TODO: if env file exists check contents result.hasEnv()
-
+        FrameworkAnalyser frameworkAnalyser = new FrameworkAnalyser(repoPath);
+        Map<String, Integer> scores = frameworkAnalyser.getSignalScores();
         ObjectMapper mapper = new ObjectMapper();
 
         try {
             RepoAnalysisRecord combinedAnalysis = new RepoAnalysisRecord(
                     rootResult,
-                    pkgResult
+                    pkgResult,
+                    scores
             );
             String json = mapper.writeValueAsString(combinedAnalysis);
             System.out.println(json);
