@@ -27,6 +27,7 @@ public class FrameworkAnalyser {
         signalScores.put("analog", 0);
         signalScores.put("solid", 0);
         signalScores.put("svelte", 0);
+        signalScores.put("sveltekit", 0);
 
         signals.put("react", List.of("@types/react", "@types/react-dom",
                 "react", "react-dom",
@@ -117,6 +118,32 @@ public class FrameworkAnalyser {
                 }
             }
         }
+    }
+
+
+    public FrameworkRecord estimateFramework() {
+        Map.Entry<String, Integer> maxFrameworkEntry = null;
+        Map.Entry<String, Integer> maxMetaFrameworkEntry = null;
+
+        String maxFramework = "";
+        String maxMetaFramework = "";
+
+        for (Map.Entry<String, Integer> entry : signalScores.entrySet()) {
+            if (metaMap.containsKey(entry.getKey())) {
+                if (maxMetaFrameworkEntry == null || entry.getValue().compareTo(maxMetaFrameworkEntry.getValue()) > 0) {
+                    maxMetaFrameworkEntry = entry;
+                    maxMetaFramework = entry.getKey();
+                }
+            } else if (maxFrameworkEntry == null || entry.getValue().compareTo(maxFrameworkEntry.getValue()) > 0) {
+                    maxFrameworkEntry = entry;
+                    maxFramework = entry.getKey();
+
+            }
+        }
+        // TODO: handle if value is zero
+        return new FrameworkRecord(
+             maxFramework, maxMetaFramework
+        );
     }
 
     public FrameworkAnalyser(String filePath) {

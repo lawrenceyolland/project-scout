@@ -23,13 +23,16 @@ public class Main {
         // TODO: if env file exists check contents result.hasEnv()
         FrameworkAnalyser frameworkAnalyser = new FrameworkAnalyser(repoPath);
         Map<String, Integer> scores = frameworkAnalyser.getSignalScores();
+        FrameworkRecord estimatedFramework = frameworkAnalyser.estimateFramework();
+
         ObjectMapper mapper = new ObjectMapper();
 
         try {
             RepoAnalysisRecord combinedAnalysis = new RepoAnalysisRecord(
                     rootResult,
                     pkgResult,
-                    scores
+                    scores,
+                    estimatedFramework
             );
             String json = mapper.writeValueAsString(combinedAnalysis);
             System.out.println(json);
