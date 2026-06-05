@@ -1,3 +1,4 @@
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Main {
@@ -20,6 +21,7 @@ public class Main {
             // pkg = packageJsonAnalyser.getPkg();
         }
         // TODO: if env file exists check contents result.hasEnv()
+
         ObjectMapper mapper = new ObjectMapper();
 
         try {

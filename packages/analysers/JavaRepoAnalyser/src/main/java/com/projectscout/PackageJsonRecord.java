@@ -1,7 +1,3 @@
-import com.fasterxml.jackson.databind.JsonNode;
-
-import java.util.List;
-
 public record PackageJsonRecord(
         boolean hasDependencies,
         boolean hasDevDependencies,
