@@ -83,15 +83,25 @@ public class FrameworkAnalyser {
             }
         }
 
+        if (pkg.hasPeerDependencies()) {
+            for (Map.Entry<String,String> dep : pkg.peerDependencies.entrySet()) {
+                frameworkCheck(dep);
+            }
+        }
+
         if (pkg.hasScripts()) {
             for (Map.Entry<String, String> script : pkg.scripts.entrySet()) {
                 String currentScriptValue = script.getValue();
-                if (currentScriptValue.contains("next")) {
-                    signalScores.put("next", signalScores.get("next") + 1);
-                    signalScores.put("react", signalScores.get("react") + 1);
-                } else if (currentScriptValue.contains("nuxt")) {
-                    signalScores.put("nuxt", signalScores.get("nuxt") + 1);
-                    signalScores.put("vue", signalScores.get("vue") + 1);
+                for (Map.Entry<String,Integer> fw : signalScores.entrySet()) {
+                    String fwName = fw.getKey();
+
+                    if (currentScriptValue.contains(fwName)) {
+                        signalScores.put(fwName, signalScores.get(fwName) + 1);
+                    }
+                    if (metaMap.containsKey(fwName)) {
+                        String mappedFramework = metaMap.get(fwName);
+                        signalScores.put(mappedFramework, signalScores.get(mappedFramework) + 1);
+                    }
                 }
             }
         }
@@ -120,29 +130,29 @@ public class FrameworkAnalyser {
         }
     }
 
-
     public FrameworkRecord estimateFramework() {
         Map.Entry<String, Integer> maxFrameworkEntry = null;
         Map.Entry<String, Integer> maxMetaFrameworkEntry = null;
 
-        String maxFramework = "";
-        String maxMetaFramework = "";
-
         for (Map.Entry<String, Integer> entry : signalScores.entrySet()) {
+            if (entry.getValue().equals(0)) continue;
+
             if (metaMap.containsKey(entry.getKey())) {
                 if (maxMetaFrameworkEntry == null || entry.getValue().compareTo(maxMetaFrameworkEntry.getValue()) > 0) {
                     maxMetaFrameworkEntry = entry;
-                    maxMetaFramework = entry.getKey();
                 }
             } else if (maxFrameworkEntry == null || entry.getValue().compareTo(maxFrameworkEntry.getValue()) > 0) {
                     maxFrameworkEntry = entry;
-                    maxFramework = entry.getKey();
-
             }
         }
-        // TODO: handle if value is zero
+
+        if (maxFrameworkEntry == null) {
+            return null;
+        }
+
         return new FrameworkRecord(
-             maxFramework, maxMetaFramework
+             maxFrameworkEntry.getKey(),
+                maxMetaFrameworkEntry != null ? maxMetaFrameworkEntry.getKey() : null
         );
     }
 
