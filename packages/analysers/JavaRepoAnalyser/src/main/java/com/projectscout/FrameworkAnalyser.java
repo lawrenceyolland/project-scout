@@ -97,10 +97,10 @@ public class FrameworkAnalyser {
 
                     if (currentScriptValue.contains(fwName)) {
                         signalScores.put(fwName, signalScores.get(fwName) + 1);
-                    }
-                    if (metaMap.containsKey(fwName)) {
-                        String mappedFramework = metaMap.get(fwName);
-                        signalScores.put(mappedFramework, signalScores.get(mappedFramework) + 1);
+                        if (metaMap.containsKey(fwName)) {
+                            String mappedFramework = metaMap.get(fwName);
+                            signalScores.put(mappedFramework, signalScores.get(mappedFramework) + 1);
+                        }
                     }
                 }
             }
