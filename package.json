@@ -3,11 +3,18 @@
   "version": "1.0.0",
   "description": "Analyse your dev portfolio and improve your hireability!",
   "main": "index.js",
-  "workspaces": ["apps/*", "packages/*"],
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:java": "cd packages/analysers/JavaRepoAnalyser && mvn package assembly:single"
+    "dev:hono": "tsx watch apps/api/src/index.ts",
+    "build:java": "cd packages/analysers/JavaRepoAnalyser && mvn clean package",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix"
   },
+
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lawrenceyolland/folio-scout.git"
@@ -19,5 +26,11 @@
   "bugs": {
     "url": "https://github.com/lawrenceyolland/folio-scout/issues"
   },
-  "homepage": "https://github.com/lawrenceyolland/folio-scout#readme"
+  "homepage": "https://github.com/lawrenceyolland/folio-scout#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "eslint": "^9.39.4",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.60.1"
+  }
 }

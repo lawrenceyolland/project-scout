@@ -86,8 +86,7 @@ public class RepoRootAnalyser {
                 hasConfig("next.config"),
                 hasConfig("vite.config"),
                 hasConfig("webpack.config"),
-                hasFile(".env"),
-                hasAnyFile("yarn.lock", "package-lock.json")
+                hasFile(".env")
         );
     }
 

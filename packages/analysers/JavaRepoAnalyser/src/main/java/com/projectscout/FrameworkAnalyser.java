@@ -146,12 +146,8 @@ public class FrameworkAnalyser {
             }
         }
 
-        if (maxFrameworkEntry == null) {
-            return null;
-        }
-
         return new FrameworkRecord(
-             maxFrameworkEntry.getKey(),
+                maxFrameworkEntry != null ? maxFrameworkEntry.getKey() : null,
                 maxMetaFrameworkEntry != null ? maxMetaFrameworkEntry.getKey() : null
         );
     }

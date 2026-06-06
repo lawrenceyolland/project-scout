@@ -1,13 +1,15 @@
-import {Hono} from "hono";
+import { Hono } from "hono";
 import { HTTPException } from 'hono/http-exception'
 import * as fs from "node:fs";
 import { simpleGit } from 'simple-git';
-import PackageJsonAnalyser from "../../../../packages/analysers/src/repo/packageJsonAnalyser.js";
-import RepoMetrics from "../../../../packages/analysers/src/repo/repoMetrics.js";
-import FrameworkAnalyser from "../../../../packages/analysers/src/repo/frameworkAnalyser.js";
-import {exec, spawn} from "node:child_process";
-import {promisify} from "node:util";
+import { exec, spawn } from "node:child_process";
+import { promisify } from "node:util";
 import path from "node:path"
+import { fileURLToPath } from "node:url"
+import { ESLint } from "eslint";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const router = new Hono();
 const BASE_PATH = '/tmp/project-scout'
@@ -21,9 +23,9 @@ router.post("", async (c) => {
     }
 
     const jobId = `job_${c.get("requestId")}`
-    let files = [];
     let stdout;
     let stderr;
+
     try {
         const jobPath = `${BASE_PATH}/jobs/${jobId}`
 
@@ -31,14 +33,13 @@ router.post("", async (c) => {
             fs.mkdirSync(jobPath, { recursive: true })
         }
 
-        const dir =  fs.readdirSync(jobPath)
         console.log(`--- Job dir for ${jobId} has been created ---`)
 
-        await simpleGit().clone(body.repoUrl, jobPath)
+       await simpleGit().clone(body.repoUrl, jobPath)
 
         const jarPath = path.resolve(
-            process.cwd(),
-            '../../packages/analysers/JavaRepoAnalyser/target/JavaRepoAnalyser-1.0-jar-with-dependencies.jar',
+            __dirname,
+            '../../../../packages/analysers/JavaRepoAnalyser/target/JavaRepoAnalyser-1.0-jar-with-dependencies.jar',
         )
 
         const command = `java -jar ${jarPath} ${jobPath}`;
@@ -50,8 +51,6 @@ router.post("", async (c) => {
         }
 
         const repoAnalysis = JSON.parse(stdout);
-
-        console.log({repoAnalysis})
 
         // TODO: incrementally move the below to the java analyser
         // 1. easy root level checks [/]
@@ -78,17 +77,29 @@ router.post("", async (c) => {
         //     srcStructure = repoMetrics.checkStructure();
         // }
 
-        // 6. TODO: run audit-ci (stays here in .ts)
-        // 7. TODO: run lint (stays here in .ts)
+        // 6. run es-lint
+        const eslint = new ESLint({
+            cwd: jobPath,
+            overrideConfigFile: path.resolve(__dirname, '../../eslint.config.js'),
+        });
+        const results = await eslint.lintFiles(['**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}']);
 
-        fs.rm(jobPath, {recursive: true}, err => {
+        const lintResult = { numErrors: 0, numWarnings: 0 };
+        results.forEach((res) => {
+                lintResult.numErrors += res.errorCount;
+                lintResult.numWarnings += res.warningCount;
+        })
+
+        // 7. TODO: run audit-ci / npm audit (stays here in .ts)
+
+        fs.rm(jobPath, {recursive: true}, (err) => {
             if (err) {
                 throw err;
             }
-
             console.log(`--- Job dir for ${jobId} has been removed ---`)
         })
-        return c.json({ success: true, data: repoAnalysis})
+
+        return c.json({ success: true, data: {...repoAnalysis, lintResult}})
     } catch (e: any) {
         console.error(e)
         throw new HTTPException(500, {message: e?.message ?? 'Server Error'});

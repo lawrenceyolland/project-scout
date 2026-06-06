@@ -20,14 +20,14 @@ public class Main {
             PackageJsonAnalyser packageJsonAnalyser = new PackageJsonAnalyser(repoPath);
             pkgResult = packageJsonAnalyser.getPkgFields();
         }
+
         // TODO: if env file exists check contents result.hasEnv()
         FrameworkAnalyser frameworkAnalyser = new FrameworkAnalyser(repoPath);
         Map<String, Integer> scores = frameworkAnalyser.getSignalScores();
         FrameworkRecord estimatedFramework = frameworkAnalyser.estimateFramework();
 
-        ObjectMapper mapper = new ObjectMapper();
-
         try {
+            ObjectMapper mapper = new ObjectMapper();
             RepoAnalysisRecord combinedAnalysis = new RepoAnalysisRecord(
                     rootResult,
                     pkgResult,

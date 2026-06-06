@@ -1,5 +1,4 @@
 import * as fs from "node:fs";
-const BASE_PATH = '/tmp/folio-scout'
 
 type RootFiles = "package.json" |
     "README.md" |

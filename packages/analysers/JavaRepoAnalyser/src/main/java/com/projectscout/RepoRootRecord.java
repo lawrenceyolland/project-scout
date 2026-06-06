@@ -19,6 +19,5 @@ public record RepoRootRecord(
         boolean hasNext,
         boolean hasVite,
         boolean hasWebPack,
-        boolean hasEnv,
-        boolean hasLockFile
+        boolean hasEnv
 ){};
