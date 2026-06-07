@@ -90,7 +90,24 @@ router.post("", async (c) => {
                 lintResult.numWarnings += res.warningCount;
         })
 
-        // 7. TODO: run audit-ci / npm audit (stays here in .ts)
+        // 7. TODO: run auditor / npm audit (stays here in .ts to use 'native tooling')
+        let vulnerabilities = {critical: null, high: null};
+        if (repoAnalysis?.rootResult?.hasNpmLockFile) {
+            const { stdout } = await execAsync('npm audit --json', { cwd: jobPath }).catch((err) => err);
+            // this is here just for parsing. Found vulnerabiltiies result in exit 1 which throws (and then I'd have to assign in the catch block).
+            try {
+                const { metadata: { vulnerabilities: { critical, high, }, }, } = JSON.parse(stdout);
+                vulnerabilities = { critical, high }
+            } catch (e) {
+                console.log('Error: failed to parse npm audit results', e)
+            }
+
+        } else if (repoAnalysis?.rootResult?.hasYarnLockFile)  {
+            console.log('TODO: run yarn audit')
+
+        } else if (repoAnalysis?.rootResult?.hasPNPMLockFile) {
+            console.log('TODO: run pnpm audit')
+        }
 
         fs.rm(jobPath, {recursive: true}, (err) => {
             if (err) {
@@ -99,7 +116,7 @@ router.post("", async (c) => {
             console.log(`--- Job dir for ${jobId} has been removed ---`)
         })
 
-        return c.json({ success: true, data: {...repoAnalysis, lintResult}})
+        return c.json({ success: true, data: {...repoAnalysis, lintResult, vulnerabilities}})
     } catch (e: any) {
         console.error(e)
         throw new HTTPException(500, {message: e?.message ?? 'Server Error'});
