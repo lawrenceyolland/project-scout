@@ -2,18 +2,18 @@ import { Hono } from "hono";
 import { HTTPException } from 'hono/http-exception'
 import * as fs from "node:fs";
 import { simpleGit } from 'simple-git';
-import { exec, spawn } from "node:child_process";
+import { exec } from "node:child_process";
 import { promisify } from "node:util";
 import path from "node:path"
 import { fileURLToPath } from "node:url"
-import { ESLint } from "eslint";
+import {runESLint, runVulnerabilityCheck} from "../utils/index.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const router = new Hono();
-const BASE_PATH = '/tmp/project-scout'
-const execAsync = promisify(exec)
+const BASE_PATH = '/tmp/project-scout';
+const execAsync = promisify(exec);
 
 router.post("", async (c) => {
     const body = await c.req.json()
@@ -23,6 +23,7 @@ router.post("", async (c) => {
     }
 
     const jobId = `job_${c.get("requestId")}`
+
     let stdout;
     let stderr;
 
@@ -35,7 +36,7 @@ router.post("", async (c) => {
 
         console.log(`--- Job dir for ${jobId} has been created ---`)
 
-       await simpleGit().clone(body.repoUrl, jobPath)
+        await simpleGit().clone(body.repoUrl, jobPath)
 
         const jarPath = path.resolve(
             __dirname,
@@ -70,7 +71,7 @@ router.post("", async (c) => {
         // 5. TODO: deeper file discovery (nested)
         //    given the framework (and version) are there any structural outliers - app router vs pages/
 
-        // if no src then dont do the below!
+        // if no src then don't do the below!
         // let srcStructure: Record<string, boolean> | null = null;
         //
         // if (easyChecksResult.hasRootSrc) {
@@ -78,45 +79,24 @@ router.post("", async (c) => {
         // }
 
         // 6. run es-lint
-        const eslint = new ESLint({
-            cwd: jobPath,
-            overrideConfigFile: path.resolve(__dirname, '../../eslint.config.js'),
-        });
-        const results = await eslint.lintFiles(['**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}']);
-
-        const lintResult = { numErrors: 0, numWarnings: 0 };
-        results.forEach((res) => {
-                lintResult.numErrors += res.errorCount;
-                lintResult.numWarnings += res.warningCount;
-        })
+        const lintResult = await runESLint(jobPath)
 
         // 7. TODO: run auditor / npm audit (stays here in .ts to use 'native tooling')
-        let vulnerabilities = {critical: null, high: null};
-        if (repoAnalysis?.rootResult?.hasNpmLockFile) {
-            const { stdout } = await execAsync('npm audit --json', { cwd: jobPath }).catch((err) => err);
-            // this is here just for parsing. Found vulnerabiltiies result in exit 1 which throws (and then I'd have to assign in the catch block).
-            try {
-                const { metadata: { vulnerabilities: { critical, high, }, }, } = JSON.parse(stdout);
-                vulnerabilities = { critical, high }
-            } catch (e) {
-                console.log('Error: failed to parse npm audit results', e)
-            }
+        const { hasNpmLockFile, hasYarnLockFile, hasPNPMLockFile } = repoAnalysis.rootResult
+        const vulnerabilitiesResult = await runVulnerabilityCheck(jobPath, {
+            hasNpmLockFile,
+            hasYarnLockFile,
+            hasPNPMLockFile
+        })
 
-        } else if (repoAnalysis?.rootResult?.hasYarnLockFile)  {
-            console.log('TODO: run yarn audit')
-
-        } else if (repoAnalysis?.rootResult?.hasPNPMLockFile) {
-            console.log('TODO: run pnpm audit')
-        }
-
-        fs.rm(jobPath, {recursive: true}, (err) => {
+        fs.rm(jobPath, { recursive: true }, (err) => {
             if (err) {
                 throw err;
             }
             console.log(`--- Job dir for ${jobId} has been removed ---`)
         })
 
-        return c.json({ success: true, data: {...repoAnalysis, lintResult, vulnerabilities}})
+        return c.json({ success: true, data: {...repoAnalysis, lintResult, vulnerabilitiesResult}})
     } catch (e: any) {
         console.error(e)
         throw new HTTPException(500, {message: e?.message ?? 'Server Error'});
