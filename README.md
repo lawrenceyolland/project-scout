@@ -21,8 +21,18 @@ A repo URL is submitted via a Hono API route. The repo is cloned and a Java stat
 - [x] Repo cloning
 - [x] Root structure analysis
 - [x] package.json analysis
+- [x] Lint run
+- [x] Package manager aware vulnerability scan
 - [ ] Framework / Metaframework analysis
+  - [x] Detection
+  - [ ] File structure (e.g. app vs page router for Next, etc.)
+  - [ ] Conflicting dependencies (Pinia in a React project, etc.)
 - [ ] Environment file analysis
 - [ ] Signal weighting
 - [ ] Claude feedback layer
 - [ ] Astro / React frontend
+
+## Assumptions
+
+All repo analysis assumes a non-production portfolio context.
+Feedback is calibrated for junior developers presenting work publicly, not teams delivering to clients or end users.
