@@ -22,6 +22,8 @@ router.post("", async (c) => {
       throw new HTTPException(500)
     }
 
+    const { repoUrl } = body
+
     const jobId = `job_${c.get("requestId")}`
 
     let stdout;
@@ -36,7 +38,7 @@ router.post("", async (c) => {
 
         console.log(`--- Job dir for ${jobId} has been created ---`)
 
-        await simpleGit().clone(body.repoUrl, jobPath)
+        await simpleGit().clone(repoUrl, jobPath)
 
         const jarPath = path.resolve(
             __dirname,
@@ -96,7 +98,15 @@ router.post("", async (c) => {
             console.log(`--- Job dir for ${jobId} has been removed ---`)
         })
 
-        return c.json({ success: true, data: {...repoAnalysis, lintResult, vulnerabilitiesResult}})
+        return c.json({
+            success: true,
+            data: {
+                repoUrl,
+                submittedAt: new Date().toISOString(),
+                ...repoAnalysis,
+                lintResult,
+                vulnerabilitiesResult
+            }})
     } catch (e: any) {
         console.error(e)
         throw new HTTPException(500, {message: e?.message ?? 'Server Error'});
