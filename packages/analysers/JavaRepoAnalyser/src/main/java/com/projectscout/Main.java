@@ -12,21 +12,21 @@ public class Main {
 
         String repoPath = args[0];
 
-        RepoRootAnalyser repoRootAnalyser = new RepoRootAnalyser(repoPath);
-        RepoRootRecord rootResult = repoRootAnalyser.analyse();
-
-        PackageJsonRecord pkgResult = null;
-        if (rootResult.hasPackageJson()) {
-            PackageJsonAnalyser packageJsonAnalyser = new PackageJsonAnalyser(repoPath);
-            pkgResult = packageJsonAnalyser.getPkgFields();
-        }
-
-        // TODO: if env file exists check contents result.hasEnv()
-        FrameworkAnalyser frameworkAnalyser = new FrameworkAnalyser(repoPath);
-        Map<String, Integer> scores = frameworkAnalyser.getSignalScores();
-        FrameworkRecord estimatedFramework = frameworkAnalyser.estimateFramework();
-
         try {
+            RepoRootAnalyser repoRootAnalyser = new RepoRootAnalyser(repoPath);
+            RepoRootRecord rootResult = repoRootAnalyser.analyse();
+
+            PackageJsonRecord pkgResult = null;
+            if (rootResult.hasPackageJson()) {
+                PackageJsonAnalyser packageJsonAnalyser = new PackageJsonAnalyser(repoPath);
+                pkgResult = packageJsonAnalyser.getPkgFields();
+            }
+
+            // TODO: if env file exists check contents result.hasEnv()
+            FrameworkAnalyser frameworkAnalyser = new FrameworkAnalyser(repoPath);
+            Map<String, Integer> scores = frameworkAnalyser.getSignalScores();
+            FrameworkRecord estimatedFramework = frameworkAnalyser.estimateFramework();
+
             ObjectMapper mapper = new ObjectMapper();
             RepoAnalysisRecord combinedAnalysis = new RepoAnalysisRecord(
                     rootResult,
@@ -36,6 +36,7 @@ public class Main {
             );
             String json = mapper.writeValueAsString(combinedAnalysis);
             System.out.println(json);
+
         } catch (Exception e) {
             System.err.println("JSON Error: " + e.getMessage());
         }

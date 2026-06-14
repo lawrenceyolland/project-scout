@@ -15,44 +15,61 @@ const router = new Hono();
 const BASE_PATH = '/tmp/project-scout';
 const execAsync = promisify(exec);
 
+
+const removeJob = (jobPath: string, jobId: string) => fs.rm(jobPath, { recursive: true }, (err) => {
+    if (err) {
+        throw err;
+    }
+    console.log(`--- Job dir for ${jobId} has been removed ---`)
+})
+
 router.post("", async (c) => {
     const body = await c.req.json()
 
     if (!body?.repoUrl) {
-      throw new HTTPException(500)
+      throw new HTTPException(500, {message: 'No repository url provided.'})
     }
 
-    const { repoUrl } = body
-
     const jobId = `job_${c.get("requestId")}`
+    const jobPath = `${BASE_PATH}/jobs/${jobId}`
+
+    if (!fs.existsSync(jobPath)) {
+        fs.mkdirSync(jobPath, { recursive: true })
+    }
+
+    console.log(`--- Job dir for ${jobId} has been created ---`)
+
+    try {
+        await simpleGit().clone(body?.repoUrl, jobPath)
+    } catch (e) {
+        removeJob(jobPath, jobId)
+        throw new HTTPException(500, {message: 'Unable to clone provided repository'})
+    }
 
     let stdout;
     let stderr;
-
+    
     try {
-        const jobPath = `${BASE_PATH}/jobs/${jobId}`
-
-        if (!fs.existsSync(jobPath)) {
-            fs.mkdirSync(jobPath, { recursive: true })
-        }
-
-        console.log(`--- Job dir for ${jobId} has been created ---`)
-
-        await simpleGit().clone(repoUrl, jobPath)
-
         const jarPath = path.resolve(
             __dirname,
             '../../../../packages/analysers/JavaRepoAnalyser/target/JavaRepoAnalyser-1.0-jar-with-dependencies.jar',
         )
-
+        console.log('trying java commanbd ..')
         const command = `java -jar ${jarPath} ${jobPath}`;
-
         ({ stdout, stderr } = await execAsync(command));
 
         if (stderr) {
-            return c.json({ success: false, error: stderr})
+            throw new Error(stderr)
         }
 
+    } catch (e) {
+        removeJob(jobPath, jobId)
+        console.log('java failed :(', stderr)
+        throw new HTTPException(500, {message: stderr})
+    }
+
+
+    try {
         const repoAnalysis = JSON.parse(stdout);
 
         // TODO: incrementally move the below to the java analyser
@@ -91,24 +108,19 @@ router.post("", async (c) => {
             hasPNPMLockFile
         })
 
-        fs.rm(jobPath, { recursive: true }, (err) => {
-            if (err) {
-                throw err;
-            }
-            console.log(`--- Job dir for ${jobId} has been removed ---`)
-        })
+        removeJob(jobPath, jobId)
 
         return c.json({
             success: true,
             data: {
-                repoUrl,
+                repoUrl: body?.repoUrl,
                 submittedAt: new Date().toISOString(),
                 ...repoAnalysis,
                 lintResult,
                 vulnerabilitiesResult
             }})
     } catch (e: any) {
-        console.error(e)
+        removeJob(jobPath, jobId)
         throw new HTTPException(500, {message: e?.message ?? 'Server Error'});
     }
 })
