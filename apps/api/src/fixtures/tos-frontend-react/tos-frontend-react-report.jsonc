@@ -1,0 +1,222 @@
+// Early React project from a 2019 bootcamp capstone (React/Rails). Representative example of a junior developer portfolio project.
+{
+  "success": true,
+  "data": {
+    "repoUrl": "https://github.com/lawrenceyolland/tos-frontend-react",
+    "submittedAt": "2026-06-16T23:26:05.463Z",
+    "rootResult": {
+      "hasPackageJson": {
+        "signal": "HAS_PACKAGE_JSON",
+        "present": true,
+        "severity": "NULL",
+        "description": "The entry point for your project's dependencies, scripts, and metadata."
+      },
+      "hasReadMe": {
+        "signal": "HAS_README",
+        "present": true,
+        "severity": "NULL",
+        "description": "A Readme communicates project content and intent, and can be a place to demonstrate how someone can get started with your repo."
+      },
+      "hasRootSrc": {
+        "signal": "HAS_ROOT_SRC",
+        "present": true,
+        "severity": "NULL",
+        "description": "Source files are organised in a dedicated src/ directory, separating application code from config and tooling."
+      },
+      "hasGitIgnore": {
+        "signal": "HAS_GIT_IGNORE",
+        "present": true,
+        "severity": "NULL",
+        "description": "Prevents unwanted files from being committed, reducing bloat and protecting access to your services."
+      },
+      "hasNodeModules": {
+        "signal": "HAS_NODE_MODULES",
+        "present": false,
+        "severity": "NULL",
+        "description": "node_modules/ is not committed to the repository."
+      },
+      "hasYarnLockFile": {
+        "signal": "HAS_YARN_LOCKFILE",
+        "present": false,
+        "severity": "NULL",
+        "description": "Understand the tradeoffs between Yarn and other package managers."
+      },
+      "hasNpmLockFile": {
+        "signal": "HAS_NPM_LOCKFILE",
+        "present": true,
+        "severity": "NULL",
+        "description": "NPM lockfile detected. Ensures deterministic installs across environments."
+      },
+      "hasPNPMLockFile": {
+        "signal": "HAS_PNPM_LOCKFILE",
+        "present": false,
+        "severity": "NULL",
+        "description": "Understand the tradeoffs between PNPM and other package managers."
+      },
+      "hasMultipleLockFiles": {
+        "signal": "HAS_MULTIPLE_LOCKFILES",
+        "present": false,
+        "severity": "NULL",
+        "description": "Different lockfiles will fall out of sync, resulting in other devs or CI environments installing different dependency versions. Can cause bugs that are hard to trace."
+      },
+      "hasEsLint": {
+        "signal": "HAS_LINTER",
+        "present": false,
+        "severity": "LOW",
+        "description": "Add a linter to maintain consistent standards across your codebase."
+      },
+      "hasPrettier": {
+        "signal": "HAS_FORMATTER",
+        "present": false,
+        "severity": "LOW",
+        "description": "Add a formatter to maintain consistent code style across your codebase."
+      },
+      "hasTypeScript": {
+        "signal": "HAS_TYPESCRIPT_CONFIG",
+        "present": false,
+        "severity": "NULL",
+        "description": "Consider adding TypeScript for static type checking and improved developer experience."
+      },
+      "hasAstro": {
+        "signal": "HAS_ASTRO_CONFIG",
+        "present": false,
+        "severity": "NULL",
+        "description": ""
+      },
+      "hasNext": {
+        "signal": "HAS_NEXT_CONFIG",
+        "present": false,
+        "severity": "NULL",
+        "description": ""
+      },
+      "haNuxt": {
+        "signal": "HAS_NUXT_CONFIG",
+        "present": false,
+        "severity": "NULL",
+        "description": ""
+      },
+      "hasVite": {
+        "signal": "HAS_VITE",
+        "present": false,
+        "severity": "NULL",
+        "description": ""
+      },
+      "hasWebPack": {
+        "signal": "HAS_WEBPACK",
+        "present": false,
+        "severity": "NULL",
+        "description": ""
+      },
+      "hasMultipleBundlers": {
+        "signal": "HAS_MULTIPLE_BUNDLERS",
+        "present": false,
+        "severity": "NULL",
+        "description": "Having multiple bundler configs present may indicate leftover configuration from a migration. Ensure only one bundler is active in your build pipeline."
+      },
+      "hasEnv": {
+        "signal": "HAS_ENV_FILE",
+        "present": false,
+        "severity": "NULL",
+        "description": "env files should be added to .gitignore. env files have high potential for risk as they can carry credentials you do not want being published into your git history."
+      }
+    },
+    "pkgResult": {
+      "hasDependencies": {
+        "signal": "HAS_DEPENDENCIES",
+        "present": true,
+        "severity": "NULL",
+        "description": "Runtime dependencies your application needs to function."
+      },
+      "hasDevDependencies": {
+        "signal": "HAS_DEV_DEPENDENCIES",
+        "present": false,
+        "severity": "HIGH",
+        "description": "Dev dependencies are required for local development, building, and testing."
+      },
+      "hasPeerDependencies": {
+        "signal": "HAS_PEER_DEPENDENCIES",
+        "present": false,
+        "severity": "LOW",
+        "description": "Peer dependencies define packages your code expects the consumer to provide."
+      },
+      "hasScripts": {
+        "signal": "HAS_SCRIPTS",
+        "present": true,
+        "severity": "NULL",
+        "description": "Scripts for running local development, building, testing, linting, and auditing."
+      },
+      "hasName": {
+        "signal": "HAS_NAME",
+        "present": true,
+        "severity": "NULL",
+        "description": "The name of your package."
+      },
+      "hasLicense": {
+        "signal": "HAS_LICENCE",
+        "present": false,
+        "severity": "LOW",
+        "description": "Add a license to clarify how others may use, modify, or distribute your code."
+      },
+      "hasType": {
+        "signal": "HAS_TYPE",
+        "present": false,
+        "severity": "MEDIUM",
+        "description": "Set \"type\" in your package.json to declare whether you are using ES modules or CommonJS."
+      },
+      "hasMain": {
+        "signal": "HAS_MAIN",
+        "present": false,
+        "severity": "LOW",
+        "description": "Add a main field to define the entry point of your package."
+      },
+      "hasDescription": {
+        "signal": "HAS_DESCRIPTION",
+        "present": false,
+        "severity": "LOW",
+        "description": "Add a description to summarise what your project does."
+      },
+      "hasAuthor": {
+        "signal": "HAS_AUTHOR",
+        "present": false,
+        "severity": "LOW",
+        "description": "Add an author field to identify who owns or maintains this package."
+      },
+      "hasHomepage": {
+        "signal": "HAS_HOMEPAGE",
+        "present": false,
+        "severity": "LOW",
+        "description": "Add a homepage URL to point to your project's site or documentation."
+      },
+      "hasRepository": {
+        "signal": "HAS_REPOSITORY",
+        "present": false,
+        "severity": "LOW",
+        "description": "Add a repository field to link to your project's source repository."
+      }
+    },
+    "frameworkScores": {
+      "next": 0,
+      "nuxt": 0,
+      "svelte": 0,
+      "sveltekit": 0,
+      "angular": 0,
+      "analog": 0,
+      "astro": 0,
+      "solid": 0,
+      "vue": 0,
+      "react": 13
+    },
+    "estimatedFramework": {
+      "framework": "react",
+      "metaFramework": null
+    },
+    "lintResult": {
+      "numErrors": 98,
+      "numWarnings": 0
+    },
+    "vulnerabilitiesResult": {
+      "critical": 23,
+      "high": 73
+    }
+  }
+}

@@ -180,7 +180,7 @@ public class RepoRootAnalyser {
     public RepoRootAnalyser(String filePath) {
         this.directory = new File(filePath);
         if (!directory.exists() || !directory.isDirectory()){
-            throw new IllegalArgumentException("Repository root does not exist");
+            throw new IllegalArgumentException("Repository root does not exist.");
         }
     }
 }
