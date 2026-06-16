@@ -1,3 +1,4 @@
 
 packages/analysers/JavaRepoAnalyser/target
 node_modules/
+out/
