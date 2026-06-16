@@ -43,7 +43,7 @@ router.post("", async (c) => {
         await simpleGit().clone(body?.repoUrl, jobPath)
     } catch (e) {
         removeJob(jobPath, jobId)
-        throw new HTTPException(500, {message: 'Unable to clone provided repository'})
+        throw new HTTPException(500, { message: 'Unable to clone provided repository' })
     }
 
     let stdout;
@@ -54,8 +54,9 @@ router.post("", async (c) => {
             __dirname,
             '../../../../packages/analysers/JavaRepoAnalyser/target/JavaRepoAnalyser-1.0-jar-with-dependencies.jar',
         )
-        console.log('trying java commanbd ..')
+
         const command = `java -jar ${jarPath} ${jobPath}`;
+
         ({ stdout, stderr } = await execAsync(command));
 
         if (stderr) {
@@ -77,15 +78,15 @@ router.post("", async (c) => {
         // 2. package.json analysis [/]
         // 3. get the framework used in the repo [/]
         // 4. repo metrics (counts, sizes, depth)
-            // const repoMetrics = await RepoMetrics.init(jobPath, pkg);
-            // const filesInRepo = repoMetrics.getFileTypes() || {};
-            // const numFiles = repoMetrics.getNumTotalFiles()
-            // const numCodeFiles = repoMetrics.getNumCodeFiles()
-            // const maxDepth = repoMetrics.getMaxDepth();
-            // const linesPerCodeFile = await repoMetrics.getLinesPerCodeFile()
-            // const linePerFileType = RepoMetrics.getLinesPerFileType(linesPerCodeFile || {});
-            // const avgPerFileType = RepoMetrics.getAvgLinesPerFileType(linesPerCodeFile || {}, filesInRepo || {})
-            // const medianPerFileType = RepoMetrics.getMedianLinesPerFileType(linesPerCodeFile || {}, filesInRepo || {})
+        //     const repoMetrics = await RepoMetrics.init(jobPath, pkg);
+        //     const filesInRepo = repoMetrics.getFileTypes() || {};
+        //     const numFiles = repoMetrics.getNumTotalFiles()
+        //     const numCodeFiles = repoMetrics.getNumCodeFiles()
+        //     const maxDepth = repoMetrics.getMaxDepth();
+        //     const linesPerCodeFile = await repoMetrics.getLinesPerCodeFile()
+        //     const linePerFileType = RepoMetrics.getLinesPerFileType(linesPerCodeFile || {});
+        //     const avgPerFileType = RepoMetrics.getAvgLinesPerFileType(linesPerCodeFile || {}, filesInRepo || {})
+        //     const medianPerFileType = RepoMetrics.getMedianLinesPerFileType(linesPerCodeFile || {}, filesInRepo || {})
 
         // 5. TODO: deeper file discovery (nested)
         //    given the framework (and version) are there any structural outliers - app router vs pages/

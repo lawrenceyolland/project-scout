@@ -33,14 +33,14 @@ public class FrameworkAnalyser {
                 "react", "react-dom",
                 "@vitejs/plugin-react", "eslint-plugin-react-hooks",
                 "eslint-plugin-react-refresh", "react-redux"));
-        signals.put("vue", List.of("vue", "@vue/", "eslint-plugin-vue", "@vitejs/plugin-vue", "pinia"));
+        signals.put("vue", List.of("vue", "@vue/", "eslint-plugin-vue", "@vitejs/plugin-vue", "pinia", "vue-router"));
         signals.put("astro", List.of("astro", "eslint-plugin-astro", "@astrojs/"));
         signals.put("angular", List.of("angular", "@angular-eslint/eslint-plugin"));
         signals.put("solid", List.of("solid-js", "eslint-plugin-solid"));
         signals.put("svelte", List.of("svelte", "eslint-plugin-svelte", "@sveltejs/adapter-vercel", "@sveltejs/vite-plugin-svelte"));
 
         signals.put("next", List.of("next", "eslint-config-next", "next-auth"));
-        signals.put("nuxt", List.of("nuxt", "@nuxt/", "vue-router"));
+        signals.put("nuxt", List.of("nuxt", "@nuxt/" ));
         signals.put("analog", List.of("@analogjs/vite-plugin-angular"));
         signals.put("sveltekit", List.of("@sveltejs/kit"));
 

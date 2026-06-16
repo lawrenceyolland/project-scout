@@ -15,6 +15,7 @@ public record RepoRootRecord(
         Signal<RootSignals> hasTypeScript,
         Signal<RootSignals> hasAstro,
         Signal<RootSignals> hasNext,
+        Signal<RootSignals> haNuxt,
         Signal<RootSignals> hasVite,
         Signal<RootSignals> hasWebPack,
         Signal<RootSignals> hasMultipleBundlers,

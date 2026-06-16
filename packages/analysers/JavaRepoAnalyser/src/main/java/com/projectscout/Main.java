@@ -36,7 +36,6 @@ public class Main {
             );
             String json = mapper.writeValueAsString(combinedAnalysis);
             System.out.println(json);
-
         } catch (Exception e) {
             System.err.println("JSON Error: " + e.getMessage());
         }
