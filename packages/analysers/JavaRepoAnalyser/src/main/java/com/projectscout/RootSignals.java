@@ -2,6 +2,7 @@ package com.projectscout;
 
 public enum RootSignals {
     HAS_PACKAGE_JSON,
+    HAS_README,
     HAS_ROOT_SRC,
     HAS_GIT_IGNORE,
     HAS_NODE_MODULES,

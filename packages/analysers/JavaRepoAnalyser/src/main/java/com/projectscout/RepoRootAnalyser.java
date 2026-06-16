@@ -49,11 +49,11 @@ public class RepoRootAnalyser {
     }
 
     public String primaryLockFile (RepoRootRecord root) {
-        if (root.hasPNPMLockFile()) {
+        if (root.hasPNPMLockFile().present()) {
             return "pnpm-lock.yaml";
-        } else if (root.hasYarnLockFile()) {
+        } else if (root.hasYarnLockFile().present()) {
             return "yarn.lock";
-        } else if (root.hasNpmLockFile()) {
+        } else if (root.hasNpmLockFile().present()) {
             return "package-lock.json";
         };
 
@@ -68,25 +68,99 @@ public class RepoRootAnalyser {
                 this.fileNames.add(file.getName());
             }
         }
+        boolean hasPackageJson = hasFile("package.json");
+        boolean hasReadMe = hasFile("README.md");
+        boolean hasRootSrc = hasFile("src");
+        boolean hasGitIgnore = hasFile(".gitignore");
+        boolean hasNodeModules = hasFile("node_modules");
+        boolean hasYarnLockFile = hasFile("yarn.lock");
+        boolean hasNpmLockFile = hasFile("package-lock.json");
+        boolean hasPNPMLockFile = hasFile("pnpm-lock.yaml");
+        boolean hasMultipleLockFiles = hasMultipleFilesOfType("yarn.lock", "package-lock.json", "pnpm-lock.yaml");
+        boolean hasEsLint = hasAnyConfig("eslint.config", ".eslintrc");
+        boolean hasPrettier = hasConfig(".prettierrc");
+        boolean hasTypeScript = hasConfig("tsconfig");
+        boolean hasAstro = hasConfig("astro");
+        boolean hasNext = hasConfig("next.config");
+        boolean hasVite = hasConfig("vite.config");
+        boolean hasWebPack = hasConfig("webpack.config");
+        boolean hasMultipleBundlers = hasMultipleFilesOfType("vite.config", "webpack.config");
+        boolean hasEnv = hasFile(".env");
 
+        // TODO: fill out descriptions / prompts for root signals
         return new RepoRootRecord(
-            hasFile("package.json"),
-            hasFile("README.md"),
-            hasFile("src"),
-            hasFile(".gitignore"),
-            hasFile("node_modules"),
-            hasFile("yarn.lock"),
-            hasFile("package-lock.json"),
-                hasFile("pnpm-lock.yaml"),
-                hasMultipleFilesOfType("yarn.lock", "package-lock.json", "pnpm-lock.yaml"),
-                hasAnyConfig("eslint.config", ".eslintrc"),
-                hasConfig(".prettierrc"),
-                hasConfig("tsconfig"),
-                hasConfig("astro"),
-                hasConfig("next.config"),
-                hasConfig("vite.config"),
-                hasConfig("webpack.config"),
-                hasFile(".env")
+                new Signal<>(
+                        RootSignals.HAS_PACKAGE_JSON, hasPackageJson, hasPackageJson ? Severity.NULL : Severity.CRITICAL,
+                        ""
+                ),
+                new Signal<>(
+                        RootSignals.HAS_README, hasReadMe, hasReadMe ? Severity.NULL : Severity.HIGH,
+                        "Readmes communicate project content and intent."
+                ),
+                new Signal<>(
+                        RootSignals.HAS_ROOT_SRC, hasRootSrc, hasRootSrc && !hasNext ? Severity.NULL : Severity.HIGH,
+                        ""
+                ),
+                new Signal<>(
+                        RootSignals.HAS_GIT_IGNORE, hasGitIgnore, hasGitIgnore ? Severity.NULL : Severity.HIGH,
+                        ""
+                ),
+                new Signal<>(
+                        RootSignals.HAS_NODE_MODULES, hasNodeModules, hasNodeModules ? Severity.HIGH : Severity.NULL,
+                        "Node modules should be added to .gitignore"
+                ),
+                new Signal<>(
+                        RootSignals.HAS_YARN_LOCKFILE, hasYarnLockFile, Severity.NULL,
+                        "Understand tradeoffs between the yarn and the other package managers"
+                ),
+                new Signal<>(
+                        RootSignals.HAS_NPM_LOCKFILE, hasNpmLockFile, Severity.NULL,
+                        "Understand tradeoffs between the NPM and the other package managers"
+                ),
+                new Signal<>(
+                        RootSignals.HAS_PNPM_LOCKFILE, hasPNPMLockFile, Severity.NULL,
+                        "Understand tradeoffs between the PNPM and the other package managers"
+                ),
+                new Signal<>(
+                        RootSignals.HAS_MULTIPLE_LOCKFILES, hasMultipleLockFiles, hasMultipleLockFiles ? Severity.HIGH : Severity.NULL,
+                        ""
+                ),
+                new Signal<>(
+                        RootSignals.HAS_LINTER, hasEsLint, hasEsLint ? Severity.NULL : Severity.MEDIUM,
+                        ""
+                ),
+                new Signal<>(
+                        RootSignals.HAS_FORMATTER, hasPrettier, hasPrettier ? Severity.NULL : Severity.LOW,
+                        ""
+                ),
+                new Signal<>(
+                        RootSignals.HAS_TYPESCRIPT_CONFIG, hasTypeScript, Severity.NULL,
+                        ""
+                ),
+                new Signal<>(
+                        RootSignals.HAS_ASTRO_CONFIG, hasAstro, Severity.NULL,
+                        ""
+                ),
+                new Signal<>(
+                        RootSignals.HAS_NEXT_CONFIG, hasNext, Severity.NULL,
+                        ""
+                ),
+                new Signal<>(
+                        RootSignals.HAS_VITE, hasVite, Severity.NULL,
+                        ""
+                ),
+                new Signal<>(
+                        RootSignals.HAS_WEBPACK, hasWebPack, Severity.NULL,
+                        ""
+                ),
+                new Signal<>(
+                        RootSignals.HAS_MULTIPLE_BUNDLERS, hasMultipleBundlers, hasMultipleBundlers ? Severity.CRITICAL : Severity.NULL,
+                        ""
+                ),
+                new Signal<>(
+                        RootSignals.HAS_ENV_FILE, hasEnv, hasEnv ? Severity.CRITICAL : Severity.NULL,
+                        ""
+                )
         );
     }
 

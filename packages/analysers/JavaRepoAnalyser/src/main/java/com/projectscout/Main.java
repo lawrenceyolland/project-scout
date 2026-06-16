@@ -17,7 +17,7 @@ public class Main {
             RepoRootRecord rootResult = repoRootAnalyser.analyse();
 
             PackageJsonRecord pkgResult = null;
-            if (rootResult.hasPackageJson()) {
+            if (rootResult.hasPackageJson().present()) {
                 PackageJsonAnalyser packageJsonAnalyser = new PackageJsonAnalyser(repoPath);
                 pkgResult = packageJsonAnalyser.getPkgFields();
             }
