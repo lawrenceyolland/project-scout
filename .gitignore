@@ -3,3 +3,4 @@ packages/analysers/JavaRepoAnalyser/target
 node_modules/
 out/
 .idea
+.DS_Store
