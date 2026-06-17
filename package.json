@@ -1,7 +1,7 @@
 {
-  "name": "folio-scout",
+  "name": "Project Scout",
   "version": "1.0.0",
-  "description": "Analyse your dev portfolio and improve your hireability!",
+  "description": "Analyse your junior dev portfolio and improve your hireability!",
   "main": "index.js",
   "workspaces": [
     "apps/*",
@@ -16,16 +16,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lawrenceyolland/folio-scout.git"
+    "url": "git+https://github.com/lawrenceyolland/project-scout.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "bugs": {
-    "url": "https://github.com/lawrenceyolland/folio-scout/issues"
+    "url": "https://github.com/lawrenceyolland/project-scout/issues"
   },
-  "homepage": "https://github.com/lawrenceyolland/folio-scout#readme",
+  "homepage": "https://github.com/lawrenceyolland/project-scout#readme",
   "devDependencies": {
     "@eslint/js": "^9.39.4",
     "eslint": "^9.39.4",
